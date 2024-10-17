@@ -1,5 +1,8 @@
 pipeline {
     agent any 
+    tools {
+        maven 'MAVEN3' // Use the name you provided in the Global Tool Configuration
+    }
     triggers {
         cron('H/10 * * * 1') // Triggers every 10 minutes on Mondays
     }
@@ -7,7 +10,6 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Checkout code and build with Maven
                     sh 'mvn clean package'
                 }
             }
@@ -15,7 +17,6 @@ pipeline {
         stage('Code Coverage') {
             steps {
                 script {
-                    // Run Jacoco to generate code coverage report
                     sh 'mvn jacoco:report'
                 }
             }
@@ -23,7 +24,6 @@ pipeline {
     }
     post {
         always {
-            // Archive the coverage report
             archiveArtifacts artifacts: '**/target/site/jacoco/jacoco.xml', allowEmptyArchive: true
         }
     }
